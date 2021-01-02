@@ -47,6 +47,7 @@ module.exports = {
                 }
             }
         },
+
         after: require("./mock/mock-server.js")
     },
     configureWebpack: {

@@ -78,9 +78,8 @@ export const constantRoutes = [
         children: [
             {
                 path: "relation",
-                name: "项目简介",
-                component: () => import("@/views/dashboard/index"),
-                meta: { title: "电影信息查询", icon: "movie" }
+                component: () => import("@/views/relation/index"),
+                meta: { title: "合作关系查询", icon: "movie" }
             }
         ]
     },
@@ -91,10 +90,10 @@ export const constantRoutes = [
         name: "movies",
         children: [
             {
-                path: "relation",
+                path: "statistics",
                 name: "项目简介",
-                component: () => import("@/views/dashboard/index"),
-                meta: { title: "电影信息查询", icon: "movie" }
+                component: () => import("@/views/statistics/index"),
+                meta: { title: "电影信息统计", icon: "movie" }
             }
         ]
     },
