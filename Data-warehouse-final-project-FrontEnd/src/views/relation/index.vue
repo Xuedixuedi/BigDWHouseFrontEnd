@@ -70,7 +70,14 @@
         >
             <div slot="header">
                 <span>查询结果</span>
-                <el-table :data="results" stripe> </el-table>
+                <el-table :data="results" stripe>
+                    <el-table-column
+                        v-for="col in columns"
+                        :key="col.key"
+                        :prop="col.key"
+                        :label="col.label"
+                        align="center"
+                /></el-table>
             </div>
         </el-card>
         <br />
@@ -79,7 +86,12 @@
 
 <script>
 import { showLoading, hideLoading } from "../../utils/loading"
-import { getActorByDirector } from "../../api/relation"
+import {
+    getActorByDirector,
+    getActorByActor,
+    getDirectorByDirector,
+    getDirectorByActor
+} from "../../api/relation"
 
 export default {
     name: "Relation",
@@ -92,7 +104,11 @@ export default {
             queryTime: 0,
             totalTime: 0,
             resultCount: 0,
-            results: []
+            results: [],
+            columns: [
+                { label: "人物 - 人物", key: "name" },
+                { label: "合作次数", key: "count" }
+            ]
         }
     },
     methods: {
@@ -108,16 +124,76 @@ export default {
             this.$data.results = []
             if (this.$data.role1 == "actor" && this.$data.role2 == "actor") {
                 console.log("actor-actor")
+                getActorByActor(actPara).then(
+                    response => {
+                        let relationInfo = response.data.relationInfo
+                        this.$data.queryTime = response.data.time
+                        for (var key in relationInfo) {
+                            this.results.push({
+                                name: relationInfo[key].actorName,
+                                count: relationInfo[key].cooperation
+                            })
+                        }
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
             } else if (
                 this.$data.role1 == "actor" &&
                 this.$data.role2 == "director"
             ) {
                 console.log("actor-director")
+                getDirectorByActor(actPara).then(
+                    response => {
+                        let relationInfo = response.data.relationInfo
+                        this.$data.queryTime = response.data.time
+                        for (var key in relationInfo) {
+                            this.results.push({
+                                name: relationInfo[key].directorName,
+                                count: relationInfo[key].cooperation
+                            })
+                        }
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
             } else if (
                 this.$data.role1 == "director" &&
                 this.$data.role2 == "director"
             ) {
                 console.log("director-director")
+                getDirectorByDirector(dirPara).then(
+                    response => {
+                        let relationInfo = response.data.relationInfo
+                        this.$data.queryTime = response.data.time
+                        for (var key in relationInfo) {
+                            this.results.push({
+                                name: relationInfo[key].directorName,
+                                count: relationInfo[key].cooperation
+                            })
+                        }
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
             } else if (
                 this.$data.role1 == "director" &&
                 this.$data.role2 == "actor"
@@ -125,10 +201,14 @@ export default {
                 console.log("director-actor")
                 getActorByDirector(dirPara).then(
                     response => {
-                        this.$data.results = response.data.relationInfo
+                        let relationInfo = response.data.relationInfo
                         this.$data.queryTime = response.data.time
-                        console.log(this.$data.results)
-                        // eslint-disable-next-line handle-callback-err
+                        for (var key in relationInfo) {
+                            this.results.push({
+                                name: relationInfo[key].actorName,
+                                count: relationInfo[key].cooperation
+                            })
+                        }
                     },
                     error => {
                         this.$message({

@@ -126,7 +126,6 @@ export default {
                         this.$data.queryTime = response.data.queryTime
                         this.$data.totalTime = response.data.totalTime
                         console.log(response.data)
-                        // eslint-disable-next-line handle-callback-err
                     },
                     error => {
                         this.$message({
@@ -144,7 +143,6 @@ export default {
                         this.$data.queryTime = response.data.queryTime
                         this.$data.totalTime = response.data.totalTime
                         console.log(response.data)
-                        // eslint-disable-next-line handle-callback-err
                     },
                     error => {
                         this.$message({
