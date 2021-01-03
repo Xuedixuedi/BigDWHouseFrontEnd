@@ -77,7 +77,7 @@ export const constantRoutes = [
             {
                 path: "relation",
                 component: () => import("@/views/relation/index"),
-                meta: { title: "合作关系查询", icon: "movie" }
+                meta: { title: "合作关系查询", icon: "relation" }
             }
         ]
     },
@@ -90,7 +90,7 @@ export const constantRoutes = [
                 path: "statistics",
                 name: "项目简介",
                 component: () => import("@/views/statistics/index"),
-                meta: { title: "电影信息统计", icon: "movie" }
+                meta: { title: "电影信息统计", icon: "example" }
             }
         ]
     },
