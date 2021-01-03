@@ -125,6 +125,13 @@ import {
     ngetByScore,
     ngetByEmotion
 } from "../../api/neo4jQuery"
+import {
+    hgetByTitle,
+    hgetByActor,
+    hgetByDirector,
+    hgetByLabel,
+    hgetByScore
+} from "../../api/hiveQuery"
 import { get } from "js-cookie"
 
 export default {
@@ -432,6 +439,128 @@ export default {
                     )
                 }
             } else if (this.$data.database == "hive") {
+                if (this.$data.field == "actor") {
+                    const para = {
+                        actorName: this.$data.title,
+                        limit: 20
+                    }
+                    hgetByActor(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "title") {
+                    const para = {
+                        title: this.$data.title,
+                        limit: 20
+                    }
+                    hgetByTitle(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "director") {
+                    const para = {
+                        directorName: this.$data.title,
+                        limit: 20
+                    }
+                    hgetByDirector(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "label") {
+                    const para = {
+                        labelName: this.$data.title,
+                        limit: 20
+                    }
+                    hgetByLabel(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "score") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    hgetByScore(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "emotion") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    hgetByEmotion(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.elapsedTime
+                            let movieInfo = response.data.data
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
             }
             hideLoading()
         },
