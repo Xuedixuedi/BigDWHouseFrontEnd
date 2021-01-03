@@ -133,6 +133,12 @@ import {
     getByEmotion,
     statisticsByScore
 } from "../../api/statistics"
+import {
+    ngetByTime,
+    ngetByScore,
+    ngetByEmotion
+} from "../../api/neo4jStatistics"
+
 export default {
     name: "Ststistics",
     data() {
@@ -266,6 +272,76 @@ export default {
                     )
                 }
             } else if (this.$data.database == "neo4j") {
+                if (
+                    this.$data.field == "year" ||
+                    this.$data.field == "month" ||
+                    this.$data.field == "day" ||
+                    this.$data.field == "season"
+                ) {
+                    const para = {
+                        time: this.$data.title,
+                        type: this.$data.field,
+                        comparison: this.$data.condition
+                    }
+                    console.log(para)
+                    ngetByTime(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.count
+                            this.$data.queryTime = response.data.time
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "score") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    console.log(para)
+                    ngetByScore(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.count
+                            this.$data.queryTime = response.data.time
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "emotion") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    console.log(para)
+                    ngetByEmotion(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.count
+                            this.$data.queryTime = response.data.time
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
                 console.log("neo4j")
             } else if (this.$data.database == "hive") {
                 console.log("hive")
