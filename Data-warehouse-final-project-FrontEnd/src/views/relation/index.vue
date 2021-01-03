@@ -114,6 +114,12 @@ import {
     ngetDirectorByDirector,
     ngetDirectorByActor
 } from "../../api/neo4jRelation"
+import {
+    hgetActorByDirector,
+    hgetActorByActor,
+    hgetDirectorByDirector,
+    hgetDirectorByActor
+} from "../../api/hiveRelation"
 
 export default {
     name: "Relation",
@@ -146,6 +152,14 @@ export default {
             }
             const actPara = {
                 actorName: this.$data.name
+            }
+            const hdirPara = {
+                directorName: this.$data.name,
+                limit: 20
+            }
+            const hactPara = {
+                actorName: this.$data.name,
+                limit: 20
             }
             console.log(dirPara)
             this.$data.results = []
@@ -362,6 +376,111 @@ export default {
                     )
                 }
             } else if (this.$data.database == "hive") {
+                if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("actor-actor")
+                    hgetActorByActor(hactPara).then(
+                        response => {
+                            let relationInfo = response.data.data
+                            this.$data.queryTime = response.data.elapsedTime
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("actor-director")
+                    hgetDirectorByActor(hactPara).then(
+                        response => {
+                            let relationInfo = response.data.data
+                            this.$data.queryTime = response.data.elapsedTime
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("director-director")
+                    hgetDirectorByDirector(hdirPara).then(
+                        response => {
+                            let relationInfo = response.data.data
+                            this.$data.queryTime = response.data.elapsedTime
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("director-actor")
+                    hgetActorByDirector(hdirPara).then(
+                        response => {
+                            let relationInfo = response.data.data
+                            this.$data.queryTime = response.data.elapsedTime
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
             }
             hideLoading()
         }
