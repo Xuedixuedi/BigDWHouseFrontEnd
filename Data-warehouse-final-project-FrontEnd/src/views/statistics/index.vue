@@ -118,7 +118,7 @@
         </el-card>
         <br />
         <el-card>
-            <div id="movieChart" :style="{ width: '100%', height: '600px' }" />
+            <ve-histogram :data="statisticsResult"></ve-histogram>
         </el-card>
     </div>
 </template>
@@ -131,7 +131,11 @@ import {
     getByTime,
     getByScore,
     getByEmotion,
-    statisticsByScore
+    statisticsByScore,
+    statisticsByEmotion,
+    statisticsByDirector,
+    statisticsByActor,
+    statisticsByLabel
 } from "../../api/statistics"
 import {
     ngetByTime,
@@ -150,15 +154,7 @@ export default {
             title: "2002-01-01",
             resultCount: 0,
             queryTime: 0,
-            statisticsResult: [],
-            //图表信息
-            option: {
-                title: { text: "" },
-                tooltip: {},
-                xAxis: { data: [] },
-                yAxis: {},
-                series: [{ name: "", type: "bar", data: [] }]
-            },
+            responseData: {},
             // ==============================================
             //                  查询域值常量
             // ==============================================
@@ -189,16 +185,7 @@ export default {
             ]
         }
     },
-    mounted() {
-        this.drawLine()
-    },
     methods: {
-        drawLine() {
-            const movieChart = echarts.init(
-                document.getElementById("movieChart")
-            )
-            movieChart.setOption(this.$data.option, true)
-        },
         //提交查询
         handleQuery: function() {
             showLoading()
@@ -351,13 +338,78 @@ export default {
         //获取统计数据
         getStaticticData: function() {
             showLoading()
-            this.$data.statisticsResult = []
-            console.log(this.$data.staField)
             if (this.$data.staField == "score") {
                 statisticsByScore().then(
                     response => {
-                        console.log(response.data)
-                        statisticsResult = response.data
+                        this.$data.responseData = response.data
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
+            } else if (this.$data.staField == "emotion") {
+                statisticsByEmotion().then(
+                    response => {
+                        this.$data.responseData = response.data
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
+            } else if (this.$data.staField == "label") {
+                const para = {
+                    limit: 20
+                }
+                statisticsByLabel(para).then(
+                    response => {
+                        this.$data.responseData = response.data
+                        console.log(this.$data.responseData)
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
+            } else if (this.$data.staField == "director") {
+                const para = {
+                    limit: 20
+                }
+                statisticsByDirector(para).then(
+                    response => {
+                        this.$data.responseData = response.data
+                        console.log(this.$data.responseData)
+                    },
+                    error => {
+                        this.$message({
+                            message: "服务器连接失败",
+                            type: "error"
+                        })
+                        hideLoading()
+                        return
+                    }
+                )
+            } else if (this.$data.staField == "actor") {
+                const para = {
+                    limit: 20
+                }
+                statisticsByActor(para).then(
+                    response => {
+                        this.$data.responseData = response.data
+                        console.log(this.$data.responseData)
                     },
                     error => {
                         this.$message({
@@ -370,6 +422,37 @@ export default {
                 )
             }
             hideLoading()
+        }
+    },
+    computed: {
+        //计算属性，生成图表实时更新
+        statisticsResult() {
+            let data = { columns: ["score", "count"], rows: [] }
+            if (this.$data.staField == "score") {
+                data = { columns: ["score", "count"], rows: [] }
+                for (var key in this.$data.responseData) {
+                    data["rows"].push(this.$data.responseData[key])
+                }
+            } else if (this.$data.staField == "emotion") {
+                data = { columns: ["emotionScore", "count"], rows: [] }
+                for (var key in this.$data.responseData) {
+                    data["rows"].push(this.$data.responseData[key])
+                }
+            } else if (
+                this.$data.staField == "label" ||
+                this.$data.staField == "director" ||
+                this.$data.staField == "actor"
+            ) {
+                data = { columns: ["label", "count"], rows: [] }
+                for (let keys of Object.keys(this.$data.responseData)) {
+                    console.log(keys, this.$data.responseData[keys])
+                    data["rows"].push({
+                        label: keys,
+                        count: this.$data.responseData[keys]
+                    })
+                }
+            }
+            return data
         }
     }
 }

@@ -32,3 +32,15 @@ export const statisticsByDirector = params => {
         params
     })
 }
+
+export const statisticsByActor = params => {
+    return axios.get(`${base}/actor-all`, {
+        params
+    })
+}
+
+export const statisticsByLabel = params => {
+    return axios.get(`${base}/label-all`, {
+        params
+    })
+}
