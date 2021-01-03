@@ -1,5 +1,5 @@
 import axios from "axios"
-const base = "http://localhost:8004/relationships"
+const base = "http://100.64.218.50:10684/relationships/mysql/"
 
 export const getActorByDirector = params => {
     return axios.get(`${base}/director-actor`, {

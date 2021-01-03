@@ -86,13 +86,13 @@
             <el-form :inline="true" size="small">
                 <el-form-item label="属性域: ">
                     <el-select
-                        v-model="field"
+                        v-model="staField"
                         placeholder="请选择属性域"
                         clearable
                         filterable
                     >
                         <el-option
-                            v-for="item in fieldList"
+                            v-for="item in staFieldList"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value"
@@ -117,17 +117,34 @@
 </template>
 
 <script>
+import echarts from "echarts"
+require("echarts/theme/macarons") // echarts theme
 import { showLoading, hideLoading } from "../../utils/loading"
-import { getByTime, getByScore, getByEmotion } from "../../api/statistics"
+import {
+    getByTime,
+    getByScore,
+    getByEmotion,
+    statisticsByScore
+} from "../../api/statistics"
 export default {
     name: "Ststistics",
     data() {
         return {
-            field: "",
+            field: "year",
+            staField: "score",
             database: "mysql",
-            condition: "",
-            title: "",
+            condition: "equal",
+            title: "2002-01-01",
             resultCount: 0,
+            statisticsResult: [],
+            //图表信息
+            option: {
+                title: { text: "" },
+                tooltip: {},
+                xAxis: { data: [] },
+                yAxis: {},
+                series: [{ name: "", type: "bar", data: [] }]
+            },
             // ==============================================
             //                  查询域值常量
             // ==============================================
@@ -144,6 +161,13 @@ export default {
                 { label: "大于（晚于）", value: "greater" },
                 { label: "小于（早于）", value: "less" }
             ],
+            staFieldList: [
+                { label: "演员", value: "actor" },
+                { label: "导演", value: "director" },
+                { label: "标签", value: "label" },
+                { label: "评分", value: "score" },
+                { label: "情感评分", value: "emotion" }
+            ],
             databaseList: [
                 { label: "关系型数据库MySQL", value: "mysql" },
                 { label: "分布式文件型数据仓库Hive", value: "hive" },
@@ -151,68 +175,105 @@ export default {
             ]
         }
     },
+    mounted() {
+        this.drawLine()
+    },
     methods: {
+        drawLine() {
+            const movieChart = echarts.init(
+                document.getElementById("movieChart")
+            )
+            movieChart.setOption(this.$data.option, true)
+        },
         //提交查询
         handleQuery: function() {
             showLoading()
-            this.$data.results = []
-            console.log(this.$data.field)
-            if (
-                this.$data.field == "year" ||
-                this.$data.field == "month" ||
-                this.$data.field == "day" ||
-                this.$data.field == "season"
-            ) {
-                const para = {
-                    time: this.$data.title,
-                    type: this.$data.field,
-                    comparison: this.$data.condition
-                }
-                console.log(para)
-                getByTime(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.resultCount = response.data.Count
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+            console.log(this.$data.database)
+            if (this.$data.database == "mysql") {
+                if (
+                    this.$data.field == "year" ||
+                    this.$data.field == "month" ||
+                    this.$data.field == "day" ||
+                    this.$data.field == "season"
+                ) {
+                    const para = {
+                        time: this.$data.title,
+                        type: this.$data.field,
+                        comparison: this.$data.condition
                     }
-                )
-            } else if (this.$data.field == "score") {
-                const para = {
-                    score: this.$data.title,
-                    large: this.$data.condition
-                }
-                console.log(para)
-                getByScore(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.resultCount = response.data.Count
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    console.log(para)
+                    getByTime(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.Count
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "score") {
+                    const para = {
+                        score: this.$data.title,
+                        large: this.$data.condition
                     }
-                )
-            } else if (this.$data.field == "emotion") {
-                const para = {
-                    score: this.$data.title,
-                    large: this.$data.condition
+                    console.log(para)
+                    getByScore(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.Count
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "emotion") {
+                    const para = {
+                        score: this.$data.title,
+                        large: this.$data.condition
+                    }
+                    console.log(para)
+                    getByEmotion(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.resultCount = response.data.Count
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
                 }
-                console.log(para)
-                getByEmotion(para).then(
+            } else if (this.$data.database == "neo4j") {
+                console.log("neo4j")
+            } else if (this.$data.database == "hive") {
+                console.log("hive")
+            }
+            hideLoading()
+        },
+        //获取统计数据
+        getStaticticData: function() {
+            showLoading()
+            this.$data.statisticsResult = []
+            console.log(this.$data.staField)
+            if (this.$data.staField == "score") {
+                statisticsByScore().then(
                     response => {
                         console.log(response.data)
-                        this.$data.resultCount = response.data.Count
+                        statisticsResult = response.data
                     },
                     error => {
                         this.$message({
@@ -225,8 +286,7 @@ export default {
                 )
             }
             hideLoading()
-        },
-        getStaticticData: function() {}
+        }
     }
 }
 </script>

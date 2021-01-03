@@ -100,11 +100,6 @@
                 <el-table :data="results">
                     <el-table-column prop="id" label="电影id" align="center" />
                     <el-table-column prop="title" label="标题" align="center" />
-                    <el-table-column
-                        prop="version"
-                        label="版本数目"
-                        align="center"
-                    />
                     <el-table-column prop="score" label="评分" align="center" />
                 </el-table>
             </el-card>
@@ -122,6 +117,14 @@ import {
     getByScore,
     getByEmotion
 } from "../../api/query"
+import {
+    ngetByTitle,
+    ngetByActor,
+    ngetByDirector,
+    ngetByLabel,
+    ngetByScore,
+    ngetByEmotion
+} from "../../api/neo4jQuery"
 import { get } from "js-cookie"
 
 export default {
@@ -129,9 +132,9 @@ export default {
     data() {
         return {
             commandList: [],
-            database: "mysql",
-            field: "",
-            title: "",
+            database: "neo4j",
+            field: "label",
+            title: "Independently Distributed",
             condition: "",
             queryTime: 0,
             results: [],
@@ -173,140 +176,262 @@ export default {
             showLoading()
             this.$data.results = []
             console.log(this.$data.field)
-            if (this.$data.field == "actor") {
-                const para = {
-                    actorName: this.$data.title
-                }
-                getByActor(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+            if (this.$data.database == "mysql") {
+                if (this.$data.field == "actor") {
+                    const para = {
+                        actorName: this.$data.title
                     }
-                )
-            } else if (this.$data.field == "title") {
-                const para = {
-                    title: this.$data.title
-                }
-                getByTitle(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    getByActor(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "title") {
+                    const para = {
+                        title: this.$data.title
                     }
-                )
-            } else if (this.$data.field == "director") {
-                const para = {
-                    directorName: this.$data.title
-                }
-                getByDirector(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    getByTitle(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "director") {
+                    const para = {
+                        directorName: this.$data.title
                     }
-                )
-            } else if (this.$data.field == "label") {
-                const para = {
-                    labelName: this.$data.title
-                }
-                getByLabel(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    getByDirector(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "label") {
+                    const para = {
+                        labelName: this.$data.title
                     }
-                )
-            } else if (this.$data.field == "score") {
-                const para = {
-                    score: this.$data.title,
-                    comparison: this.$data.condition
-                }
-                getByScore(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    getByLabel(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "score") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
                     }
-                )
-            } else if (this.$data.field == "emotion") {
-                const para = {
-                    score: this.$data.title,
-                    comparison: this.$data.condition
-                }
-                getByEmotion(para).then(
-                    response => {
-                        console.log(response.data)
-                        this.$data.queryTime = response.data.time
-                        let movieInfo = response.data.movieList
-                        console.log(movieInfo)
-                        this.getMobieList(movieInfo)
-                        console.log(this.$data.results)
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
+                    getByScore(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "emotion") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
                     }
-                )
+                    getByEmotion(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            console.log(movieInfo)
+                            this.getMobieList(movieInfo)
+                            console.log(this.$data.results)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
+            } else if (this.$data.database == "neo4j") {
+                if (this.$data.field == "actor") {
+                    const para = {
+                        actor: this.$data.title
+                    }
+                    ngetByActor(para).then(
+                        response => {
+                            console.log(response.data)
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "title") {
+                    const para = {
+                        title: this.$data.title
+                    }
+                    ngetByTitle(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "director") {
+                    const para = {
+                        director: this.$data.title
+                    }
+                    ngetByDirector(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "label") {
+                    const para = {
+                        label: this.$data.title
+                    }
+                    ngetByLabel(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "score") {
+                    const para = {
+                        score: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    ngetByScore(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (this.$data.field == "emotion") {
+                    const para = {
+                        emotion: this.$data.title,
+                        comparison: this.$data.condition
+                    }
+                    ngetByEmotion(para).then(
+                        response => {
+                            this.$data.queryTime = response.data.time
+                            let movieInfo = response.data.movieList
+                            this.ngetMovieList(movieInfo)
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
+            } else if (this.$data.database == "hive") {
             }
             hideLoading()
         },
@@ -316,8 +441,16 @@ export default {
                 this.$data.results.push({
                     id: movieInfo[key].productId,
                     title: movieInfo[key].title,
-                    version: movieInfo[key].version,
                     score: movieInfo[key].score.score / 100
+                })
+            }
+        },
+        ngetMovieList: function(movieInfo) {
+            for (var key in movieInfo) {
+                this.$data.results.push({
+                    id: movieInfo[key].product_id,
+                    title: movieInfo[key].title,
+                    score: movieInfo[key].score / 100
                 })
             }
         },

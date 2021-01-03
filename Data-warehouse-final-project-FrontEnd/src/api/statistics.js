@@ -1,5 +1,5 @@
 import axios from "axios"
-const base = "http://localhost:8004/statistics/"
+const base = "http://100.64.218.50:10684/statistics/mysql"
 
 export const getByTime = params => {
     return axios.get(`${base}/time`, {
@@ -15,6 +15,20 @@ export const getByScore = params => {
 
 export const getByEmotion = params => {
     return axios.get(`${base}/emotion`, {
+        params
+    })
+}
+
+export const statisticsByScore = () => {
+    return axios.get(`${base}/score-all`)
+}
+
+export const statisticsByEmotion = () => {
+    return axios.get(`${base}/emotion-all`)
+}
+
+export const statisticsByDirector = params => {
+    return axios.get(`${base}/director-all`, {
         params
     })
 }

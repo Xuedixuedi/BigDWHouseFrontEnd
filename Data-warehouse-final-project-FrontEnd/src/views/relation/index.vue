@@ -143,107 +143,114 @@ export default {
             }
             console.log(dirPara)
             this.$data.results = []
-            if (this.$data.role1 == "actor" && this.$data.role2 == "actor") {
-                console.log("actor-actor")
-                getActorByActor(actPara).then(
-                    response => {
-                        let relationInfo = response.data.relationInfo
-                        this.$data.queryTime = response.data.time
-                        for (var key in relationInfo) {
-                            this.results.push({
-                                name: relationInfo[key].actorName,
-                                count: relationInfo[key].cooperation
+            if (this.$data.database == "mysql") {
+                if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("actor-actor")
+                    getActorByActor(actPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].actorName,
+                                    count: relationInfo[key].cooperation
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
                             })
+                            hideLoading()
+                            return
                         }
-                        this.$data.resultCount = relationInfo.length
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
-                    }
-                )
-            } else if (
-                this.$data.role1 == "actor" &&
-                this.$data.role2 == "director"
-            ) {
-                console.log("actor-director")
-                getDirectorByActor(actPara).then(
-                    response => {
-                        let relationInfo = response.data.relationInfo
-                        this.$data.queryTime = response.data.time
-                        for (var key in relationInfo) {
-                            this.results.push({
-                                name: relationInfo[key].directorName,
-                                count: relationInfo[key].cooperation
+                    )
+                } else if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("actor-director")
+                    getDirectorByActor(actPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].directorName,
+                                    count: relationInfo[key].cooperation
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
                             })
+                            hideLoading()
+                            return
                         }
-                        this.$data.resultCount = relationInfo.length
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
-                    }
-                )
-            } else if (
-                this.$data.role1 == "director" &&
-                this.$data.role2 == "director"
-            ) {
-                console.log("director-director")
-                getDirectorByDirector(dirPara).then(
-                    response => {
-                        let relationInfo = response.data.relationInfo
-                        this.$data.queryTime = response.data.time
-                        for (var key in relationInfo) {
-                            this.results.push({
-                                name: relationInfo[key].directorName,
-                                count: relationInfo[key].cooperation
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("director-director")
+                    getDirectorByDirector(dirPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].directorName,
+                                    count: relationInfo[key].cooperation
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
                             })
+                            hideLoading()
+                            return
                         }
-                        this.$data.resultCount = relationInfo.length
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
-                    }
-                )
-            } else if (
-                this.$data.role1 == "director" &&
-                this.$data.role2 == "actor"
-            ) {
-                console.log("director-actor")
-                getActorByDirector(dirPara).then(
-                    response => {
-                        let relationInfo = response.data.relationInfo
-                        this.$data.queryTime = response.data.time
-                        for (var key in relationInfo) {
-                            this.results.push({
-                                name: relationInfo[key].actorName,
-                                count: relationInfo[key].cooperation
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("director-actor")
+                    getActorByDirector(dirPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].actorName,
+                                    count: relationInfo[key].cooperation
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
                             })
+                            hideLoading()
+                            return
                         }
-                        this.$data.resultCount = relationInfo.length
-                    },
-                    error => {
-                        this.$message({
-                            message: "服务器连接失败",
-                            type: "error"
-                        })
-                        hideLoading()
-                        return
-                    }
-                )
+                    )
+                }
+            } else if (this.$data.database == "neo4j") {
+            } else if (this.$data.database == "hive") {
             }
             hideLoading()
         }
