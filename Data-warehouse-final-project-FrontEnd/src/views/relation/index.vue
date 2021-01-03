@@ -106,7 +106,7 @@ export default {
             resultCount: 0,
             results: [],
             columns: [
-                { label: "人物 - 人物", key: "name" },
+                { label: "人物", key: "name" },
                 { label: "合作次数", key: "count" }
             ]
         }
@@ -134,6 +134,7 @@ export default {
                                 count: relationInfo[key].cooperation
                             })
                         }
+                        this.$data.resultCount = relationInfo.length
                     },
                     error => {
                         this.$message({
@@ -159,6 +160,7 @@ export default {
                                 count: relationInfo[key].cooperation
                             })
                         }
+                        this.$data.resultCount = relationInfo.length
                     },
                     error => {
                         this.$message({
@@ -184,6 +186,7 @@ export default {
                                 count: relationInfo[key].cooperation
                             })
                         }
+                        this.$data.resultCount = relationInfo.length
                     },
                     error => {
                         this.$message({
@@ -209,6 +212,7 @@ export default {
                                 count: relationInfo[key].cooperation
                             })
                         }
+                        this.$data.resultCount = relationInfo.length
                     },
                     error => {
                         this.$message({
