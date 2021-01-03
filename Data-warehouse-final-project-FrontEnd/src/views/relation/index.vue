@@ -108,6 +108,12 @@ import {
     getDirectorByDirector,
     getDirectorByActor
 } from "../../api/relation"
+import {
+    ngetActorByDirector,
+    ngetActorByActor,
+    ngetDirectorByDirector,
+    ngetDirectorByActor
+} from "../../api/neo4jRelation"
 
 export default {
     name: "Relation",
@@ -115,7 +121,7 @@ export default {
         return {
             role1: "actor",
             role2: "actor",
-            name: "",
+            name: "Jose Sefami",
             database: "neo4j",
             queryTime: 0,
             totalTime: 0,
@@ -250,6 +256,111 @@ export default {
                     )
                 }
             } else if (this.$data.database == "neo4j") {
+                if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("actor-actor")
+                    ngetActorByActor(actPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "actor" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("actor-director")
+                    ngetDirectorByActor(actPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "director"
+                ) {
+                    console.log("director-director")
+                    ngetDirectorByDirector(dirPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                } else if (
+                    this.$data.role1 == "director" &&
+                    this.$data.role2 == "actor"
+                ) {
+                    console.log("director-actor")
+                    ngetActorByDirector(dirPara).then(
+                        response => {
+                            let relationInfo = response.data.relationInfo
+                            this.$data.queryTime = response.data.time
+                            for (var key in relationInfo) {
+                                this.results.push({
+                                    name: relationInfo[key].name,
+                                    count: relationInfo[key].count
+                                })
+                            }
+                            this.$data.resultCount = relationInfo.length
+                        },
+                        error => {
+                            this.$message({
+                                message: "服务器连接失败",
+                                type: "error"
+                            })
+                            hideLoading()
+                            return
+                        }
+                    )
+                }
             } else if (this.$data.database == "hive") {
             }
             hideLoading()

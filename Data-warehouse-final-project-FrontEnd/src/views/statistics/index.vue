@@ -72,6 +72,13 @@
                 <el-form-item>
                     <i class="el-icon-d-arrow-right" />
                 </el-form-item>
+                <el-form-item label="查询时间: ">
+                    <el-tag>{{ queryTime }} ms</el-tag>
+                </el-form-item>
+                <br />
+                <el-form-item>
+                    <i class="el-icon-d-arrow-right" />
+                </el-form-item>
                 <el-form-item label="结果数目: ">
                     <el-tag>{{ resultCount }} 个</el-tag>
                 </el-form-item>
@@ -136,6 +143,7 @@ export default {
             condition: "equal",
             title: "2002-01-01",
             resultCount: 0,
+            queryTime: 0,
             statisticsResult: [],
             //图表信息
             option: {
