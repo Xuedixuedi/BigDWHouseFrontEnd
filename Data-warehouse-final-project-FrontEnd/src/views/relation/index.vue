@@ -8,6 +8,22 @@
             <div slot="header">
                 <span>合作关系</span>
             </div>
+            <div>
+                <el-select
+                    v-model="database"
+                    placeholder="请选择数据库"
+                    clearable
+                    filterable
+                >
+                    <el-option
+                        v-for="item in databaseList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    />
+                </el-select>
+            </div>
+            <br />
 
             <el-form :inline="true" size="small">
                 <el-form-item>
@@ -108,6 +124,11 @@ export default {
             columns: [
                 { label: "人物", key: "name" },
                 { label: "合作次数", key: "count" }
+            ],
+            databaseList: [
+                { label: "关系型数据库MySQL", value: "mysql" },
+                { label: "分布式文件型数据仓库Hive", value: "hive" },
+                { label: "图数据库neo4j", value: "neo4j" }
             ]
         }
     },

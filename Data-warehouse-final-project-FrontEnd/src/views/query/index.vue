@@ -8,6 +8,22 @@
                 shadow="hover"
             >
                 <div slot="header" class="clearfix">查询条件</div>
+                <div>
+                    <el-select
+                        v-model="database"
+                        placeholder="请选择数据库"
+                        clearable
+                        filterable
+                    >
+                        <el-option
+                            v-for="item in databaseList"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </div>
+                <br />
                 <el-form :inline="true" size="small">
                     <el-form-item>
                         <el-select
@@ -61,6 +77,13 @@
                     <el-form-item label="查询时间:">
                         <el-tag>{{ queryTime }} ms</el-tag>
                     </el-form-item>
+                    <br />
+                    <el-form-item>
+                        <i class="el-icon-d-arrow-right" />
+                    </el-form-item>
+                    <el-form-item label="结果数目: ">
+                        <el-tag> {{ results.length }} 个</el-tag>
+                    </el-form-item>
                 </el-form>
                 <br />
             </el-card>
@@ -112,6 +135,7 @@ export default {
             condition: "",
             queryTime: 0,
             results: [],
+            resultCount: 0,
             // ==============================================
             //                  查询域值常量
             // ==============================================
@@ -127,6 +151,11 @@ export default {
                 { label: "等于", value: "equal" },
                 { label: "大于", value: "greater" },
                 { label: "小于", value: "less" }
+            ],
+            databaseList: [
+                { label: "关系型数据库MySQL", value: "mysql" },
+                { label: "分布式文件型数据仓库Hive", value: "hive" },
+                { label: "图数据库neo4j", value: "neo4j" }
             ]
         }
     },
