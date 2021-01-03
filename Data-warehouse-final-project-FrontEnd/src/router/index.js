@@ -57,10 +57,9 @@ export const constantRoutes = [
         ]
     },
     {
-        path: "/movie",
+        path: "/query",
         component: Layout,
         redirect: "/movies/search",
-        name: "movies",
         children: [
             {
                 path: "query",
@@ -71,10 +70,9 @@ export const constantRoutes = [
         ]
     },
     {
-        path: "/movie",
+        path: "/relation",
         component: Layout,
         redirect: "/movies/search",
-        name: "movies",
         children: [
             {
                 path: "relation",
@@ -84,10 +82,9 @@ export const constantRoutes = [
         ]
     },
     {
-        path: "/movie",
+        path: "/statistics",
         component: Layout,
         redirect: "/movies/search",
-        name: "movies",
         children: [
             {
                 path: "statistics",
