@@ -33,9 +33,11 @@ yarn run dev
 
 ### 项目后端及ETL代码
 
-https://github.com/Major-333/BigDataWareHouse（ETL+Mysql+neo4j）
+https://github.com/Major-333/BigDataWareHouse
 
-Hive代码再一个私有仓库，因为这个朋友把数据库密码OpenBilibili后就私有了。
+⬆️ETL+Mysql+neo4j
+
+Hive代码在一个私有仓库，因为这个朋友把数据库密码OpenBilibili后就私有了。
 
 ETL和neo4j由大🐙贡献。mysql是本人贡献的，Hive由小🐙朋友贡献。
 
